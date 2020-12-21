@@ -1,16 +1,16 @@
 package com.parkit.parkingsystem.model;
 
-
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Ticket {
     private int id;
     private ParkingSpot parkingSpot;
     private String vehicleRegNumber;
     private double price;
-    private LocalDateTime inTime;
-    private LocalDateTime outTime;
-    
+    private double discount;
+    private Date inTime;
+    private Date outTime;
+
     public int getId() {
         return id;
     }
@@ -36,26 +36,34 @@ public class Ticket {
     }
 
     public double getPrice() {
-    	return price;
+        return price;
     }
 
     public void setPrice(double price) {
         this.price = price;
     }
 
-    public LocalDateTime getInTime() {
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public Date getInTime() {
         return inTime;
     }
 
-    public void setInTime(LocalDateTime inTime) {
+    public void setInTime(Date inTime) {
         this.inTime = inTime;
     }
 
-    public LocalDateTime getOutTime() {
+    public Date getOutTime() {
         return outTime;
     }
 
-    public void setOutTime(LocalDateTime outTime) {
+    public void setOutTime(Date outTime) {
         this.outTime = outTime;
     }
 }

@@ -4,48 +4,114 @@ import com.parkit.parkingsystem.config.DataBaseConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
 
+/**
+ * this class establishes connections with test database and closes them.
+ */
 public class DataBaseTestConfig extends DataBaseConfig {
+    /**
+     * DataBaseTestConfig logger.
+     */
+    private static final Logger LOGGER
+            = LogManager.getLogger("DataBaseTestConfig");
 
-    private static final Logger logger = LogManager.getLogger("DataBaseTestConfig");
+    /**
+     * credentials file path
+     */
+    private static final String FILE_PATH = "src/main/resources/credentials.properties";
 
-    public Connection getConnection() throws ClassNotFoundException, SQLException {
-        logger.info("Create DB connection");
+    /**
+     * mysql prod database url.
+     */
+    private String url;
+
+    /**
+     * user name that will be used.
+     * for connecting to mysql db
+     */
+    private String userName;
+
+    /**
+     * password that will be used.
+     * for connecting to mysql db
+     */
+    private String password;
+    /**
+     * Connect to test database.
+     * @return the established connexion
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+
+    public Connection getConnection()
+            throws ClassNotFoundException, SQLException {
+        LOGGER.debug("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/test","root","rootroot");
+        try (InputStream inputStream = new FileInputStream(FILE_PATH)){
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            url = properties.getProperty("testUrl");
+            userName = properties.getProperty("userName");
+            password = properties.getProperty("password");
+        } catch (FileNotFoundException fnf) {
+            LOGGER.error("File not found. ", fnf);
+        } catch (IOException ioe) {
+            LOGGER.error("", ioe);
+        }
+        return DriverManager.getConnection(url, userName, password);
     }
 
-    public void closeConnection(Connection con){
-        if(con!=null){
+    /**
+     * Closes data base test connection.
+     * @param con as Connection instance to be closed
+     */
+    public void closeConnection(final Connection con) {
+        if (con != null) {
             try {
                 con.close();
-                logger.info("Closing DB connection");
+                LOGGER.debug("Closing DB connection");
             } catch (SQLException e) {
-                logger.error("Error while closing connection",e);
+                LOGGER.error("Error while closing connection", e);
             }
         }
     }
 
-    public void closePreparedStatement(PreparedStatement ps) {
-        if(ps!=null){
+    /**
+     * Closes prepared statement.
+     * @param ps as an instance of PreparedStatement to be closed
+     */
+    public void closePreparedStatement(final PreparedStatement ps) {
+        if (ps != null) {
             try {
                 ps.close();
-                logger.info("Closing Prepared Statement");
+                LOGGER.debug("Closing Prepared Statement");
             } catch (SQLException e) {
-                logger.error("Error while closing prepared statement",e);
+                LOGGER.error("Error while closing prepared statement", e);
             }
         }
     }
 
-    public void closeResultSet(ResultSet rs) {
-        if(rs!=null){
+    /**
+     * closes result set.
+     * @param rs as an instance of ResultSet to be closed
+     */
+    public void closeResultSet(final ResultSet rs) {
+        if (rs != null) {
             try {
                 rs.close();
-                logger.info("Closing Result Set");
+                LOGGER.debug("Closing Result Set");
             } catch (SQLException e) {
-                logger.error("Error while closing result set",e);
+                LOGGER.error("Error while closing result set", e);
             }
         }
     }

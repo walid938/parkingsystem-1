@@ -1,6 +1,23 @@
 package com.parkit.parkingsystem.constants;
 
+/**
+ * an enumeration that contains the different parking type.
+ */
 public enum ParkingType {
+    /**
+     *  a car parking spot.
+     */
     CAR,
-    BIKE
+
+    /**
+     *  a bike parking spot.
+     */
+    BIKE,
+
+    /**
+     * a parking spot that is used only for test purposes.
+     * it represents a parking type that
+     * is not treated by the FareCalculatorService
+     */
+    UNKNOWN; //used for test purposes only
 }
