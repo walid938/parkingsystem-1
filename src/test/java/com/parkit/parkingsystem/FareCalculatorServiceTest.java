@@ -103,14 +103,17 @@ public class FareCalculatorServiceTest {
     @Test
     public void givenTwentyNineMinutesParkingDuration_whenCalculatingCarFare_thenFareShouldBeEqualToZero() {
         Date inTime = new Date();
-        inTime.setTime(System.currentTimeMillis() - (29 * 60 * 1000));
+        inTime.setTime(System.currentTimeMillis() - (30 * 60 * 1000));
+        
         Date outTime = new Date();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-
+        System.out.println(inTime.toString());
+        System.out.println(outTime.toString());
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
-        fareCalculatorService.freeParkingService(ticket);
+        fareCalculatorService.calculateFare(ticket);
+        
         assertEquals(0, ticket.getPrice());
     }
 

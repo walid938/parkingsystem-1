@@ -105,10 +105,11 @@ public class ParkingService {
      * calls the readVehicleRegistrationNumber method of InputReaderUtil class.
      * asks a user for his/her vehicle registration number
      * @return String: the vehicle registration number
+     * @throws Exception 
      * @throws IllegalArgumentException
      * if the provided vehicle reg number is incorrect or null
      */
-    private String getVehicleRegNumber() {
+    private String getVehicleRegNumber() throws Exception {
         LOGGER.info("Please type the vehicle "
                 + "registration number and press enter key");
         return inputReaderUtil.readVehicleRegistrationNumber();

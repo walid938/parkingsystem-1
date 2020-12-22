@@ -11,6 +11,8 @@ public class Ticket {
     private Date inTime;
     private Date outTime;
 
+    
+   
     public int getId() {
         return id;
     }

@@ -65,7 +65,10 @@ public class FareCalculatorService {
         //leaving hour
         long outHour = ticket.getOutTime().getTime();
         //converting parking duration from milliseconds to minutes
-        return ((outHour - inHour) / MILLISECONDS_PER_MINUTE);
+        long result = ((outHour - inHour) / MILLISECONDS_PER_MINUTE);
+        return result ;
+        
+       
 
     }
 
@@ -73,11 +76,12 @@ public class FareCalculatorService {
      * this method permits the free 30 minutes parking service.
      * @param ticket the ticket to which we calculate fare
      */
-    public void freeParkingService(final Ticket ticket) {
+    private boolean isFreeParkingService(final Ticket ticket) {
         errorWhilePrecessingExitingVehicle(ticket);
-        if (calculateParkingDuration(ticket) < FREE_SERVICE) {
-            ticket.setPrice(0);
+        if (calculateParkingDuration(ticket) <= FREE_SERVICE) {
+            return true;
         }
+        return false;
     }
 
     /**
@@ -87,23 +91,28 @@ public class FareCalculatorService {
     public void calculateFare(final Ticket ticket) {
 
         errorWhilePrecessingExitingVehicle(ticket);
-
-        switch (ticket.getParkingSpot().getParkingType()) {
+        if (isFreeParkingService(ticket)) {
+        	
+        	ticket.setPrice(0);
+        }
+        else {
+        	switch (ticket.getParkingSpot().getParkingType()) {
 
             case CAR:
                 ticket.setPrice(calculateParkingDuration(ticket)
                         * (Fare.CAR_RATE_PER_HOUR / MINUTES_PER_HOUR));
-                freeParkingService(ticket);
                 break;
 
             case BIKE:
                 ticket.setPrice(calculateParkingDuration(ticket)
                         * (Fare.BIKE_RATE_PER_HOUR / MINUTES_PER_HOUR));
-                freeParkingService(ticket);
                 break;
 
             default: throw new IllegalArgumentException("Unknown Parking Type");
         }
+        
+        }
+        
     }
 
     /**
@@ -114,20 +123,21 @@ public class FareCalculatorService {
 
         errorWhilePrecessingExitingVehicle(ticket);
 
+       
         switch (ticket.getParkingSpot().getParkingType()) {
             case CAR:
                 ticket.setPrice(((calculateParkingDuration(ticket)
                         * (Fare.CAR_RATE_PER_HOUR / MINUTES_PER_HOUR))
                         * FARE_TO_BE_PAID_BY_RECURRING_USERS)
                         / FARE_TO_BE_PAID_BY_NEW_USERS);
-                freeParkingService(ticket);
+               
                 break;
             case BIKE:
                 ticket.setPrice(((calculateParkingDuration(ticket)
                         * (Fare.BIKE_RATE_PER_HOUR / MINUTES_PER_HOUR))
                         * FARE_TO_BE_PAID_BY_RECURRING_USERS)
                         / FARE_TO_BE_PAID_BY_NEW_USERS);
-                freeParkingService(ticket);
+                
                 break;
             default: throw new IllegalArgumentException("Unknown Parking Type");
         }
